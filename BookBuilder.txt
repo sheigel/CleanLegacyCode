@@ -1,0 +1,77 @@
+using System;
+using System.Reflection;
+using LegayCode.Bll;
+
+namespace LegayCode.Tests.Builders
+{
+    public class BookBuilder
+    {
+        private int _publisherId = 2;
+
+        private string _publisherDescription = "Some publisher";
+
+        private long _ISBN = 1234;
+
+        private readonly AuthorCollection authors = new AuthorCollection();
+
+        public static BookBuilder ABook()
+        {
+            return new BookBuilder();
+        }
+
+        public BookBuilder WithPublisher(int publisher)
+        {
+            _publisherId = publisher;
+            return this;
+        }
+
+        public BookBuilder WithPublisherDescription(string publisherDescription)
+        {
+            _publisherDescription = publisherDescription;
+            return this;
+        }
+
+        public BookBuilder WithIsbn(long isbn)
+        {
+            _ISBN = isbn;
+            return this;
+        }
+
+        public Book Build()
+        {
+            var constructor = typeof(Book).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null);
+            var book = (Book)constructor.Invoke(null);
+            
+            SetPublisher(book);
+            SetPublisherDescription(book);
+            SetAuthors(book);
+            SetIsbn(book);
+            
+            return book;
+        }
+
+        private void SetAuthors(Book book)
+        {
+            typeof(Book).GetProperty("Authors")
+                .SetValue(book, authors, null);
+        }
+
+        private void SetPublisher(Book book)
+        {
+            typeof(Book).GetProperty("PublisherId")
+                .SetValue(book, _publisherId, null);
+        }
+
+        private void SetPublisherDescription(Book book)
+        {
+            typeof(Book).GetProperty("PublisherDescription")
+                .SetValue(book, _publisherDescription, null);
+        }
+
+        private void SetIsbn(Book book)
+        {
+            typeof(Book).GetProperty("ISBN")
+                .SetValue(book, _ISBN, null);
+        }
+    }
+}
