@@ -30,10 +30,10 @@ namespace LegayCode
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            FilterBooks(QueryStringPublisher);
+            FilterBooks(QueryStringPublisher, QueryStringBookClassification);
         }
 
-        public void FilterBooks(Publisher publisherQuery)
+        public void FilterBooks(Publisher publisherQuery, Classification classificationQuery)
         {
             if (publisherQuery == Publisher.Unknown)
             {
@@ -52,8 +52,8 @@ namespace LegayCode
                         // Show details.
                         Book book = publisherBookGroup.Books.First();
 
-                        if (QueryStringBookClassification == Classification.Unknown ||
-                            book.Classification == QueryStringBookClassification)
+                        if (classificationQuery == Classification.Unknown ||
+                            book.Classification == classificationQuery)
                         {
                             //Display book details
                             Uri targetPage = GetTargetPage(book.ISBN, book.Publisher);
@@ -64,7 +64,7 @@ namespace LegayCode
                         {
                             //Display no books for classification
                             ShowNoBooksPanel(string.Format("No books for the classification {0} available.",
-                                QueryStringBookClassification));
+                                classificationQuery));
                         }
                     }
                     else if (bookCount == 0)

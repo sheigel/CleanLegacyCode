@@ -58,6 +58,7 @@
     <Compile Include="BookOverviewTests.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="PrivateSetter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

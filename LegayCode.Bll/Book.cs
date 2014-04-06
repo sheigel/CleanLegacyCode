@@ -29,6 +29,6 @@ namespace LegayCode.Bll
             get { throw new DependencyException(); }
         }
 
-        public Classification Classification    { get; set; }
+        public Classification Classification    { get; private set; }
     }
 }

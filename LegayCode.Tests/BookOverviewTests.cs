@@ -17,7 +17,7 @@ namespace LegayCode.Tests
                 PublisherGroups = new Collection<PublisherBookGroup> {A.PublisherBookGroup.Build()}
             };
 
-            sut.FilterBooks(Publisher.Unknown);
+            sut.FilterBooks(Publisher.Unknown, Classification.Fiction);
 
             sut.DisplayedBookGroups.Should().HaveCount(1);
         }
@@ -27,21 +27,21 @@ namespace LegayCode.Tests
     public class PublisherGroupEmpty
     {
         [Test]
-        public void DisplayErrorMessage_NullPublisherBookGroup()
+        public void DisplaysErrorMessage_NullPublisherBookGroup()
         {
             var sut = new BookOverviewSensor {PublisherBookGroup = null};
 
-            sut.FilterBooks(Publisher.Humanitas);
+            sut.FilterBooks(Publisher.Humanitas, Classification.Fiction);
 
             sut.ErrorText.Should().Contain("Humanitas publisher");
         }
 
         [Test]
-        public void DisplayErrorMessage_EmptyPublisherBookGroup()
+        public void DisplaysErrorMessage_EmptyPublisherBookGroup()
         {
             var sut = new BookOverviewSensor {PublisherBookGroup = A.PublisherBookGroup.Build()};
 
-            sut.FilterBooks(Publisher.Humanitas);
+            sut.FilterBooks(Publisher.Humanitas, Classification.Fiction);
 
             sut.ErrorText.Should().Contain("Humanitas publisher");
         }
@@ -59,10 +59,28 @@ namespace LegayCode.Tests
                 PublisherBookGroup = A.PublisherBookGroup.WithBooks(A.Book, A.Book).Build()
             };
 
-            sut.FilterBooks(Publisher.Humanitas);
+            sut.FilterBooks(Publisher.Humanitas, Classification.Fiction);
 
             sut.DisplayedBookGroups.Should().HaveCount(1);
             sut.DisplayedBookGroups.First().Books.Should().HaveCount(2);
+        }
+    }
+
+    [TestFixture]
+    public class PublisherGroupHasOneBook
+    {
+        [Test]
+        public void DisplaysErrorMessage_NoBookWithSpecifiedClassification()
+        {
+            var sut = new BookOverviewSensor
+            {
+                PublisherBookGroup =
+                    A.PublisherBookGroup.WithBooks(A.Book.WithClassification(Classification.Fiction)).Build()
+            };
+
+            sut.FilterBooks(Publisher.Humanitas, Classification.NonFiction);
+
+            sut.ErrorText.Should().Contain("classification NonFiction available");
         }
     }
 

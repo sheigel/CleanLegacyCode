@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
@@ -22,7 +21,7 @@ namespace LegayCode.Tests
 
     public class PublisherBookGroupBuilder
     {
-        private BookCollection books= new BookCollection();
+        private readonly BookCollection books = new BookCollection();
 
         public PublisherBookGroup Build()
         {
@@ -31,7 +30,7 @@ namespace LegayCode.Tests
 
         public PublisherBookGroupBuilder WithBooks(params BookBuilder[] bookBuilders)
         {
-            foreach (var book in bookBuilders.Select(b=>b.Build()))
+            foreach (Book book in bookBuilders.Select(b => b.Build()))
             {
                 books.Add(book);
             }
@@ -41,31 +40,22 @@ namespace LegayCode.Tests
 
     public class BookBuilder
     {
+        private Classification classification = Classification.Unknown;
+
         public Book Build()
         {
             var book = (Book) FormatterServices.GetUninitializedObject(typeof (Book));
-            SetProperty(book, b => book.Authors, new AuthorCollection());
+            PrivateSetter.SetProperty(book, b => b.Classification, classification);
+
+            PrivateSetter.SetProperty(book, b => book.Authors, new AuthorCollection());
 
             return book;
         }
 
-        private static void SetProperty<TSource, TProperty>(TSource source,
-            Expression<Func<TSource, TProperty>> expression, TProperty authors)
+        public BookBuilder WithClassification(Classification classification)
         {
-            source.GetType().GetProperty(GetPropertyName(expression)).SetValue(source, authors, null);
-        }
-
-        private static string GetPropertyName<TSource, TProperty>(
-            Expression<Func<TSource, TProperty>> propertyIdentifier)
-        {
-            var memberExpression = propertyIdentifier.Body as MemberExpression;
-
-            if (memberExpression == null)
-            {
-                return null;
-            }
-
-            return memberExpression.Member.Name;
+            this.classification = classification;
+            return this;
         }
     }
 }
