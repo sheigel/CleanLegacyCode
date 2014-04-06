@@ -18,9 +18,7 @@ namespace LegayCode
             get { throw new DependencyException(); }
         }
 
-        private static Uri GetTargetPage(
-            long bookId,
-            Publisher publisher)
+        private static Uri GetTargetPage(long bookId, Publisher publisher)
         {
             throw new DependencyException();
         }
@@ -32,16 +30,21 @@ namespace LegayCode
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            LoadData();
+        }
+
+        private void LoadData()
+        {
             if (QueryStringPublisher == Publisher.Unknown)
             {
+                //Display groups
                 gridView.DataSource = BookManager.GetBookCollection().GetGroups;
                 gridView.DataBind();
             }
             else
             {
                 PublisherBookGroup publisherBookGroup =
-                    BookManager.GetBookCollection()
-                        .GetPublisherGroup(QueryStringPublisher);
+                    BookManager.GetBookCollection().GetPublisherGroup(QueryStringPublisher);
 
                 if (publisherBookGroup != null)
                 {
@@ -50,43 +53,41 @@ namespace LegayCode
                     if (bookCount == 1)
                     {
                         // Show details.
-                        Book book =
-                            publisherBookGroup.Books.First();
+                        Book book = publisherBookGroup.Books.First();
 
-                        if (QueryStringBookClassification == Classification.Unknown
-                            || book.Classification
-                            == QueryStringBookClassification)
+                        if (QueryStringBookClassification == Classification.Unknown ||
+                            book.Classification == QueryStringBookClassification)
                         {
-                            Uri targetPage = GetTargetPage(
-                                book.ISBN,
-                                book.Publisher);
+                            //Display book details
+                            Uri targetPage = GetTargetPage(book.ISBN, book.Publisher);
 
                             Response.Redirect(targetPage.ToString());
                         }
                         else
                         {
+                            //Display no books for classification
                             ShowNoBooksPanel(string.Format("No books for the classification {0} available.",
-                                                           QueryStringBookClassification));
+                                QueryStringBookClassification));
                         }
                     }
                     else if (bookCount == 0)
                     {
-                        ShowNoBooksPanel(string.Format(
-                            "No books for the {0} publisher available.", QueryStringPublisher));
+                        //Display no books for publisher
+                        ShowNoBooksPanel(string.Format("No books for the {0} publisher available.", QueryStringPublisher));
                     }
                     else
                     {
-                        var publisherGroups =
-                            new Collection<PublisherBookGroup> {publisherBookGroup};
+                        var publisherGroups = new Collection<PublisherBookGroup> {publisherBookGroup};
 
+                        //Display Groups
                         gridView.DataSource = publisherGroups;
                         gridView.DataBind();
                     }
                 }
                 else
                 {
-                    ShowNoBooksPanel(string.Format(
-                        "No books for the {0} publisher available.", QueryStringPublisher));
+                    //Display no books for publisher
+                    ShowNoBooksPanel(string.Format("No books for the {0} publisher available.", QueryStringPublisher));
                 }
             }
         }
