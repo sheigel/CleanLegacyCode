@@ -10,7 +10,7 @@ namespace LegayCode.Tests
     public class PublisherUnknown
     {
         [Test]
-        public void DisplayAllGroups()
+        public void DisplaysAllGroups()
         {
             var sut = new BookOverviewSensor
             {
@@ -52,7 +52,7 @@ namespace LegayCode.Tests
     public class PublisherGroupHasManyBooks
     {
         [Test]
-        public void DisplayErrorMessage_NullPublisherBookGroup()
+        public void DisplaysGroups()
         {
             var sut = new BookOverviewSensor
             {
