@@ -1,4 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Runtime.Serialization;
 using FluentAssertions;
 using LegayCode.Bll;
 using NUnit.Framework;
@@ -50,6 +54,30 @@ namespace LegayCode.Tests
         }
     }
 
+
+    [TestFixture]
+    public class PublisherGroupHasManyBooks
+    {
+        [Test]
+        public void DisplayErrorMessage_NullPublisherBookGroup()
+        {
+            var sut = new BookOverviewSensor
+            {
+                PublisherBookGroup =
+                    new PublisherBookGroup(
+                        new BookCollection
+                        {
+                            A.Book.Build(),
+                            A.Book.Build(),
+                        }, 2, "unimportant")
+            };
+
+            sut.FilterBooks(Publisher.Humanitas);
+
+            sut.DisplayedBookGroups.Should().HaveCount(1);
+            sut.DisplayedBookGroups.First().Books.Should().HaveCount(2);
+        }
+    }
 
 
     public class BookOverviewSensor : BookOverview

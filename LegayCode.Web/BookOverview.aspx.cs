@@ -77,8 +77,7 @@ namespace LegayCode
                         var publisherGroups = new Collection<PublisherBookGroup> {publisherBookGroup};
 
                         //Display Groups
-                        gridView.DataSource = publisherGroups;
-                        gridView.DataBind();
+                        DisplayGroups(publisherGroups);
                     }
                 }
                 else
