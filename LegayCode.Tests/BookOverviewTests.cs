@@ -5,14 +5,13 @@ using NUnit.Framework;
 
 namespace LegayCode.Tests
 {
-
     [TestFixture]
     public class PublisherUnknown
     {
         [Test]
         public void DisplayAllGroups()
         {
-            var sut = new BookOverviewSensor()
+            var sut = new BookOverviewSensor
             {
                 PublisherGroups =
                     new Collection<PublisherBookGroup> {new PublisherBookGroup(new BookCollection(), 2, "Humanitas")}
@@ -24,13 +23,30 @@ namespace LegayCode.Tests
         }
     }
 
+    [TestFixture]
+    public class PublisherGroupEmpty
+    {
+        [Test]
+        public void DisplayErrorMessage()
+        {
+            var sut = new BookOverviewSensor {PublisherBookGroup = null};
+
+            sut.FilterBooks(Publisher.Humanitas);
+
+            sut.ErrorText.Should().Contain("Humanitas publisher");
+        }
+    }
+
+
     public class BookOverviewSensor : BookOverview
     {
         public Collection<PublisherBookGroup> PublisherGroups { get; set; }
+        public PublisherBookGroup PublisherBookGroup { get; set; }
         public Collection<PublisherBookGroup> DisplayedBookGroups { get; set; }
+        public string ErrorText { get; set; }
 
 
-        protected override Collection<PublisherBookGroup> PublisherBookGroups()
+        protected override Collection<PublisherBookGroup> GetPublisherBookGroups()
         {
             return PublisherGroups;
         }
@@ -39,7 +55,15 @@ namespace LegayCode.Tests
         {
             DisplayedBookGroups = publisherBookGroups;
         }
+
+        protected override PublisherBookGroup GetPublisherBookGroup(Publisher publisherQuery)
+        {
+            return PublisherBookGroup;
+        }
+
+        protected override void ShowNoBooksPanel(string noBooksText)
+        {
+            ErrorText = noBooksText;
+        }
     }
-
-
 }

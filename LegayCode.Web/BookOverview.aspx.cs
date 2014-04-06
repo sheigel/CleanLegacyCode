@@ -23,7 +23,7 @@ namespace LegayCode
             throw new DependencyException();
         }
 
-        private void ShowNoBooksPanel(string noBooksText)
+        protected virtual void ShowNoBooksPanel(string noBooksText)
         {
             errorLabel.Text = Resources.GetString(noBooksText);
         }
@@ -37,11 +37,11 @@ namespace LegayCode
         {
             if (publisherQuery == Publisher.Unknown)
             {
-                DisplayGroups(PublisherBookGroups());
+                DisplayGroups(GetPublisherBookGroups());
             }
             else
             {
-                PublisherBookGroup publisherBookGroup = BookManager.GetBookCollection().GetPublisherGroup(publisherQuery);
+                PublisherBookGroup publisherBookGroup = GetPublisherBookGroup(publisherQuery);
 
                 if (publisherBookGroup != null)
                 {
@@ -89,7 +89,12 @@ namespace LegayCode
             }
         }
 
-        protected virtual Collection<PublisherBookGroup> PublisherBookGroups()
+        protected virtual PublisherBookGroup GetPublisherBookGroup(Publisher publisherQuery)
+        {
+            return BookManager.GetBookCollection().GetPublisherGroup(publisherQuery);
+        }
+
+        protected virtual Collection<PublisherBookGroup> GetPublisherBookGroups()
         {
             return BookManager.GetBookCollection().GetGroups;
         }
