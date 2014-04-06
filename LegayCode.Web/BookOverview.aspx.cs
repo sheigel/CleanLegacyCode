@@ -54,8 +54,7 @@ namespace LegayCode
                             publisherBookGroup.Books.First();
 
                         if (QueryStringBookClassification == Classification.Unknown
-                            || BookManager.GetClassificationByGenre(
-                                book.Genre)
+                            || book.Classification
                             == QueryStringBookClassification)
                         {
                             Uri targetPage = GetTargetPage(
