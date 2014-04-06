@@ -27,7 +27,7 @@ namespace LegayCode.Tests
     public class PublisherGroupEmpty
     {
         [Test]
-        public void DisplayErrorMessage()
+        public void DisplayErrorMessage_NullPublisherBookGroup()
         {
             var sut = new BookOverviewSensor {PublisherBookGroup = null};
 
@@ -35,7 +35,21 @@ namespace LegayCode.Tests
 
             sut.ErrorText.Should().Contain("Humanitas publisher");
         }
+
+        [Test]
+        public void DisplayErrorMessage_EmptyPublisherBookGroup()
+        {
+            var sut = new BookOverviewSensor
+            {
+                PublisherBookGroup = new PublisherBookGroup(new BookCollection(), 2, "unimportant")
+            };
+
+            sut.FilterBooks(Publisher.Humanitas);
+
+            sut.ErrorText.Should().Contain("Humanitas publisher");
+        }
     }
+
 
 
     public class BookOverviewSensor : BookOverview
