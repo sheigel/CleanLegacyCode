@@ -30,11 +30,6 @@ namespace LegayCode
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            LoadData();
-        }
-
-        private void LoadData()
-        {
             if (QueryStringPublisher == Publisher.Unknown)
             {
                 //Display groups
