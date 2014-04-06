@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
 using LegayCode.Bll;
@@ -10,6 +12,30 @@ namespace LegayCode.Tests
         public static BookBuilder Book
         {
             get { return new BookBuilder(); }
+        }
+
+        public static PublisherBookGroupBuilder PublisherBookGroup
+        {
+            get { return new PublisherBookGroupBuilder(); }
+        }
+    }
+
+    public class PublisherBookGroupBuilder
+    {
+        private BookCollection books= new BookCollection();
+
+        public PublisherBookGroup Build()
+        {
+            return new PublisherBookGroup(books, 2, "Humanitas");
+        }
+
+        public PublisherBookGroupBuilder WithBooks(params BookBuilder[] bookBuilders)
+        {
+            foreach (var book in bookBuilders.Select(b=>b.Build()))
+            {
+                books.Add(book);
+            }
+            return this;
         }
     }
 

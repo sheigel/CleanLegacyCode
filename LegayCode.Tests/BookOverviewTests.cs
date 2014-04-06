@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.Serialization;
 using FluentAssertions;
 using LegayCode.Bll;
 using NUnit.Framework;
@@ -17,8 +14,7 @@ namespace LegayCode.Tests
         {
             var sut = new BookOverviewSensor
             {
-                PublisherGroups =
-                    new Collection<PublisherBookGroup> {new PublisherBookGroup(new BookCollection(), 2, "Humanitas")}
+                PublisherGroups = new Collection<PublisherBookGroup> {A.PublisherBookGroup.Build()}
             };
 
             sut.FilterBooks(Publisher.Unknown);
@@ -43,10 +39,7 @@ namespace LegayCode.Tests
         [Test]
         public void DisplayErrorMessage_EmptyPublisherBookGroup()
         {
-            var sut = new BookOverviewSensor
-            {
-                PublisherBookGroup = new PublisherBookGroup(new BookCollection(), 2, "unimportant")
-            };
+            var sut = new BookOverviewSensor {PublisherBookGroup = A.PublisherBookGroup.Build()};
 
             sut.FilterBooks(Publisher.Humanitas);
 
@@ -63,13 +56,7 @@ namespace LegayCode.Tests
         {
             var sut = new BookOverviewSensor
             {
-                PublisherBookGroup =
-                    new PublisherBookGroup(
-                        new BookCollection
-                        {
-                            A.Book.Build(),
-                            A.Book.Build(),
-                        }, 2, "unimportant")
+                PublisherBookGroup = A.PublisherBookGroup.WithBooks(A.Book, A.Book).Build()
             };
 
             sut.FilterBooks(Publisher.Humanitas);
