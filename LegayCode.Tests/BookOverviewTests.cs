@@ -52,7 +52,7 @@ namespace LegayCode.Tests
     public class PublisherGroupHasManyBooks
     {
         [Test]
-        public void DisplaysGroups()
+        public void DisplaysASingleGroupForPublisher()
         {
             var sut = new BookOverviewSensor
             {
@@ -82,6 +82,20 @@ namespace LegayCode.Tests
 
             sut.ErrorText.Should().Contain("classification NonFiction available");
         }
+
+        [Test]
+        public void DisplaysBookDetails_NoSpecifiedClassification()
+        {
+            var sut = new BookOverviewSensor
+            {
+                PublisherBookGroup =
+                    A.PublisherBookGroup.WithBooks(A.Book.WithClassification(Classification.Fiction)).Build()
+            };
+
+            sut.FilterBooks(Publisher.Humanitas, Classification.Unknown);
+
+            sut.DisplayedBook.Should().NotBeNull();
+        }
     }
 
 
@@ -91,6 +105,7 @@ namespace LegayCode.Tests
         public PublisherBookGroup PublisherBookGroup { get; set; }
         public Collection<PublisherBookGroup> DisplayedBookGroups { get; set; }
         public string ErrorText { get; set; }
+        public Book DisplayedBook { get; set; }
 
 
         protected override Collection<PublisherBookGroup> GetPublisherBookGroups()
@@ -101,6 +116,11 @@ namespace LegayCode.Tests
         protected override void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
         {
             DisplayedBookGroups = publisherBookGroups;
+        }
+
+        protected override void DisplayBookDetails(Book book)
+        {
+            DisplayedBook = book;
         }
 
         protected override PublisherBookGroup GetPublisherBookGroup(Publisher publisherQuery)

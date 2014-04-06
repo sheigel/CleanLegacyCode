@@ -55,10 +55,7 @@ namespace LegayCode
                         if (classificationQuery == Classification.Unknown ||
                             book.Classification == classificationQuery)
                         {
-                            //Display book details
-                            Uri targetPage = GetTargetPage(book.ISBN, book.Publisher);
-
-                            Response.Redirect(targetPage.ToString());
+                            DisplayBookDetails(book);
                         }
                         else
                         {
@@ -86,6 +83,14 @@ namespace LegayCode
                     ShowNoBooksPanel(string.Format("No books for the {0} publisher available.", publisherQuery));
                 }
             }
+        }
+
+        protected virtual void DisplayBookDetails(Book book)
+        {
+//Display book details
+            Uri targetPage = GetTargetPage(book.ISBN, book.Publisher);
+
+            Response.Redirect(targetPage.ToString());
         }
 
         protected virtual PublisherBookGroup GetPublisherBookGroup(Publisher publisherQuery)
