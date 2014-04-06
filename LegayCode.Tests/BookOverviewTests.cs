@@ -52,11 +52,29 @@ namespace LegayCode.Tests
     public class PublisherGroupHasManyBooks
     {
         [Test]
-        public void DisplaysASingleGroupForPublisher()
+        public void DisplaysASingleGroupForPublisher_MatchingClassification()
         {
             var sut = new BookOverviewSensor
             {
                 PublisherBookGroup = A.PublisherBookGroup.WithBooks(A.Book, A.Book).Build()
+            };
+
+            sut.FilterBooks(Publisher.Humanitas, Classification.Fiction);
+
+            sut.DisplayedBookGroups.Should().HaveCount(1);
+            sut.DisplayedBookGroups.First().Books.Should().HaveCount(2);
+        }
+
+        [Test]
+        public void DisplaysOnlyBooksMatchingClassification()
+        {
+            var sut = new BookOverviewSensor
+            {
+                PublisherBookGroup =
+                    A.PublisherBookGroup.WithBooks(
+                        A.Book.WithClassification(Classification.NonFiction),
+                        A.Book.WithClassification(Classification.Fiction),
+                        A.Book.WithClassification(Classification.Fiction)).Build()
             };
 
             sut.FilterBooks(Publisher.Humanitas, Classification.Fiction);
