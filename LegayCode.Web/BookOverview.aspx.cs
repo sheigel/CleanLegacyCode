@@ -38,50 +38,32 @@ namespace LegayCode
             if (publisherQuery == Publisher.Unknown)
             {
                 DisplayGroups(GetPublisherBookGroups());
+                return;
+            }
+
+            PublisherBookGroup publisherBookGroup = GetPublisherBookGroup(publisherQuery);
+            if (publisherBookGroup == null || !publisherBookGroup.Books.Any())
+            {
+                ShowNoBooksPanel(string.Format("No books for the {0} publisher available.", publisherQuery));
+                return;
+            }
+
+            if (publisherBookGroup.Books.Count() != 1)
+            {
+                var publisherGroups = new Collection<PublisherBookGroup> {publisherBookGroup};
+                DisplayGroups(publisherGroups);
+                return;
+            }
+
+            Book book = publisherBookGroup.Books.First();
+            if (classificationQuery == Classification.Unknown || book.Classification == classificationQuery)
+            {
+                DisplayBookDetails(book);
             }
             else
             {
-                PublisherBookGroup publisherBookGroup = GetPublisherBookGroup(publisherQuery);
-
-                if (publisherBookGroup != null)
-                {
-                    int bookCount = publisherBookGroup.Books.Count();
-
-                    if (bookCount == 1)
-                    {
-                        // Show details.
-                        Book book = publisherBookGroup.Books.First();
-
-                        if (classificationQuery == Classification.Unknown ||
-                            book.Classification == classificationQuery)
-                        {
-                            DisplayBookDetails(book);
-                        }
-                        else
-                        {
-                            //Display no books for classification
-                            ShowNoBooksPanel(string.Format("No books for the classification {0} available.",
-                                classificationQuery));
-                        }
-                    }
-                    else if (bookCount == 0)
-                    {
-                        //Display no books for publisher
-                        ShowNoBooksPanel(string.Format("No books for the {0} publisher available.", publisherQuery));
-                    }
-                    else
-                    {
-                        var publisherGroups = new Collection<PublisherBookGroup> {publisherBookGroup};
-
-                        //Display Groups
-                        DisplayGroups(publisherGroups);
-                    }
-                }
-                else
-                {
-                    //Display no books for publisher
-                    ShowNoBooksPanel(string.Format("No books for the {0} publisher available.", publisherQuery));
-                }
+                //Display no books for classification
+                ShowNoBooksPanel(string.Format("No books for the classification {0} available.", classificationQuery));
             }
         }
 
