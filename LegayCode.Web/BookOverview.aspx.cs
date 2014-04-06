@@ -30,16 +30,18 @@ namespace LegayCode
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (QueryStringPublisher == Publisher.Unknown)
+            FilterBooks(QueryStringPublisher);
+        }
+
+        public void FilterBooks(Publisher publisherQuery)
+        {
+            if (publisherQuery == Publisher.Unknown)
             {
-                //Display groups
-                gridView.DataSource = BookManager.GetBookCollection().GetGroups;
-                gridView.DataBind();
+                DisplayGroups(PublisherBookGroups());
             }
             else
             {
-                PublisherBookGroup publisherBookGroup =
-                    BookManager.GetBookCollection().GetPublisherGroup(QueryStringPublisher);
+                PublisherBookGroup publisherBookGroup = BookManager.GetBookCollection().GetPublisherGroup(publisherQuery);
 
                 if (publisherBookGroup != null)
                 {
@@ -68,7 +70,7 @@ namespace LegayCode
                     else if (bookCount == 0)
                     {
                         //Display no books for publisher
-                        ShowNoBooksPanel(string.Format("No books for the {0} publisher available.", QueryStringPublisher));
+                        ShowNoBooksPanel(string.Format("No books for the {0} publisher available.", publisherQuery));
                     }
                     else
                     {
@@ -82,9 +84,21 @@ namespace LegayCode
                 else
                 {
                     //Display no books for publisher
-                    ShowNoBooksPanel(string.Format("No books for the {0} publisher available.", QueryStringPublisher));
+                    ShowNoBooksPanel(string.Format("No books for the {0} publisher available.", publisherQuery));
                 }
             }
+        }
+
+        protected virtual Collection<PublisherBookGroup> PublisherBookGroups()
+        {
+            return BookManager.GetBookCollection().GetGroups;
+        }
+
+        protected virtual void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
+        {
+//Display groups
+            gridView.DataSource = publisherBookGroups;
+            gridView.DataBind();
         }
     }
 }
