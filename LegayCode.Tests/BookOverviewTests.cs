@@ -69,15 +69,21 @@ namespace LegayCode.Tests
     [TestFixture]
     public class PublisherGroupHasOneBook
     {
-        [Test]
-        public void DisplaysErrorMessage_NoBookWithSpecifiedClassification()
+        private BookOverviewSensor sut;
+
+        [SetUp]
+        public  void SetUp()
         {
-            var sut = new BookOverviewSensor
+            sut = new BookOverviewSensor
             {
                 PublisherBookGroup =
                     A.PublisherBookGroup.WithBooks(A.Book.WithClassification(Classification.Fiction)).Build()
             };
+        }
 
+        [Test]
+        public void DisplaysErrorMessage_NoBookWithSpecifiedClassification()
+        {
             sut.FilterBooks(Publisher.Humanitas, Classification.NonFiction);
 
             sut.ErrorText.Should().Contain("classification NonFiction available");
@@ -86,12 +92,6 @@ namespace LegayCode.Tests
         [Test]
         public void DisplaysBookDetails_NoSpecifiedClassification()
         {
-            var sut = new BookOverviewSensor
-            {
-                PublisherBookGroup =
-                    A.PublisherBookGroup.WithBooks(A.Book.WithClassification(Classification.Fiction)).Build()
-            };
-
             sut.FilterBooks(Publisher.Humanitas, Classification.Unknown);
 
             sut.DisplayedBook.Should().NotBeNull();
