@@ -36,19 +36,7 @@ namespace LegayCode.Tests
     public class PublisherGroupEmpty
     {
         private BookPresenter sut;
-
-        [Test]
-        public void DisplaysErrorMessage_NullPublisherBookGroup()
-        {
-            var sensor = new BookOverviewSensor();
-            sut = new BookPresenter(sensor, sensor);
-            sensor.PublisherBookGroup = null;
-
-            sut.DisplayFilteredBooks(Publisher.Humanitas, Classification.Fiction);
-
-            sensor.ErrorText.Should().Contain("Humanitas publisher");
-        }
-
+        
         [Test]
         public void DisplaysErrorMessage_EmptyPublisherBookGroup()
         {
@@ -146,7 +134,7 @@ namespace LegayCode.Tests
     }
 
 
-    public class BookOverviewSensor : IBookOverview, IBookRepository
+    public class BookOverviewSensor : BookRepository,IBookOverview, IBookRepository
 
     {
         public Collection<PublisherBookGroup> PublisherGroups { get; set; }
@@ -171,12 +159,12 @@ namespace LegayCode.Tests
             ErrorText = noBooksText;
         }
 
-        public Collection<PublisherBookGroup> GetPublisherBookGroups()
+        public override Collection<PublisherBookGroup> GetPublisherBookGroups()
         {
             return PublisherGroups;
         }
 
-        public PublisherBookGroup GetPublisherBookGroup(Publisher publisherQuery)
+        public override PublisherBookGroup GetPublisherBookGroup(Publisher publisherQuery)
         {
             return PublisherBookGroup;
         }

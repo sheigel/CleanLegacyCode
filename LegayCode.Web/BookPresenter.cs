@@ -7,8 +7,8 @@ namespace LegayCode
 {
     public class BookPresenter
     {
-        private readonly IBookOverview view;
         private readonly IBookRepository repository;
+        private readonly IBookOverview view;
 
         public BookPresenter(IBookOverview view, IBookRepository repository)
         {
@@ -24,39 +24,36 @@ namespace LegayCode
                 return;
             }
 
-            PublisherBookGroup publisherBookGroup = repository.GetPublisherBookGroup(publisherQuery);
-            if (publisherBookGroup == null || !publisherBookGroup.Books.Any())
+            PublisherBookGroup bookGroup = repository.GetPublisherBookGroup(publisherQuery);
+            if (!bookGroup.Books.Any())
             {
                 view.ShowNoBooksPanel(String.Format("No books for the {0} publisher available.", publisherQuery));
                 return;
             }
+            var publisherBookGroup = FilterByClassification(bookGroup, classificationQuery);
 
-            if (publisherBookGroup.Books.Count() != 1)
+            if (!publisherBookGroup.Books.Any())
             {
-                publisherBookGroup.Books.Remove(b => b.Classification != classificationQuery);
-
-                if (!publisherBookGroup.Books.Any())
-                {
-                    view.ShowNoBooksPanel("No books available for the specified filter.");
-                    return;
-                }
-                var publisherGroups = new Collection<PublisherBookGroup> {publisherBookGroup};
-
-
-                view.DisplayGroups(publisherGroups);
+                view.ShowNoBooksPanel(String.Format("No books for the classification {0} available.", classificationQuery));
                 return;
             }
 
-            Book book = publisherBookGroup.Books.First();
-            if (classificationQuery == Classification.Unknown || book.Classification == classificationQuery)
+            if (publisherBookGroup.Books.Count() == 1)
             {
-                view.DisplayBookDetails(book);
+                view.DisplayBookDetails(publisherBookGroup.Books.First());
+                return;
             }
-            else
+
+            view.DisplayGroups(new Collection<PublisherBookGroup> {publisherBookGroup});
+        }
+
+        private PublisherBookGroup FilterByClassification(PublisherBookGroup publisherBookGroup, Classification classificationQuery)
+        {
+            if (classificationQuery != Classification.Unknown)
             {
-                //Display no books for classification
-                view.ShowNoBooksPanel(String.Format("No books for the classification {0} available.", classificationQuery));
+                publisherBookGroup.Books.Remove(b => b.Classification != classificationQuery);
             }
+            return publisherBookGroup;
         }
     }
 }

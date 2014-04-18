@@ -76,7 +76,7 @@ namespace LegayCode.Bll
             }
             else
             {
-                return null;
+                return new PublisherBookGroup(new BookCollection(), publisherId, string.Empty);
             }
         }
 
