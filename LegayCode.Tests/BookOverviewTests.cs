@@ -9,18 +9,27 @@ namespace LegayCode.Tests
     [TestFixture]
     public class PublisherUnknown
     {
-        private BookPresenter presenter;
+        private BookPresenter sut;
+        private BookOverviewSensor sensor;
+
+        [SetUp]
+        public virtual void SetUp()
+        {
+            sensor = new BookOverviewSensor();
+            sut = new BookPresenter(sensor, sensor);
+        }
 
         [Test]
         public void DisplaysAllGroups()
         {
-            var sensor = new BookOverviewSensor {PublisherGroups = new Collection<PublisherBookGroup> {A.PublisherBookGroup.Build()}};
-            presenter = new BookPresenter(sensor, sensor);
+            sensor.PublisherGroups = new Collection<PublisherBookGroup> { A.PublisherBookGroup.Build() };
 
-            presenter.DisplayFilteredBooks(Publisher.Unknown, Classification.Fiction);
+            sut.DisplayFilteredBooks(Publisher.Unknown, Classification.Fiction);
 
             sensor.DisplayedBookGroups.Should().HaveCount(1);
         }
+
+       
     }
 
     [TestFixture]
@@ -57,28 +66,20 @@ namespace LegayCode.Tests
     [TestFixture]
     public class PublisherGroupHasManyBooks
     {
-        private BookPresenter sut;
-
-        [Test]
-        public void DisplaysASingleGroupForPublisher_MatchingClassification()
+        [SetUp]
+        public virtual void SetUp()
         {
-            var sensor = new BookOverviewSensor();
+            sensor = new BookOverviewSensor();
             sut = new BookPresenter(sensor, sensor);
-            sensor.PublisherBookGroup =
-                A.PublisherBookGroup.WithBooks(A.Book.WithClassification(Classification.Fiction),
-                    A.Book.WithClassification(Classification.Fiction)).Build();
-
-            sut.DisplayFilteredBooks(Publisher.Humanitas, Classification.Fiction);
-
-            sensor.DisplayedBookGroups.Should().HaveCount(1);
-            sensor.DisplayedBookGroups.First().Books.Should().HaveCount(2);
         }
 
+        private BookPresenter sut;
+        private BookOverviewSensor sensor;
+
+
         [Test]
-        public void DisplaysOnlyBooksMatchingClassification()
+        public void DisplaysBooksGrouped_OnlyBooksMatchingClassification()
         {
-            var sensor = new BookOverviewSensor();
-            sut = new BookPresenter(sensor, sensor);
             sensor.PublisherBookGroup =
                 A.PublisherBookGroup.WithBooks(A.Book.WithClassification(Classification.NonFiction),
                     A.Book.WithClassification(Classification.Fiction), A.Book.WithClassification(Classification.Fiction)).Build();
@@ -87,6 +88,19 @@ namespace LegayCode.Tests
 
             sensor.DisplayedBookGroups.Should().HaveCount(1);
             sensor.DisplayedBookGroups.First().Books.Should().HaveCount(2);
+        }
+
+        [Test]
+        public void DisplaysAnErrorMessage_NoBooksMatchClassification()
+        {
+            sensor.PublisherBookGroup =
+                A.PublisherBookGroup.WithBooks(
+                    A.Book.WithClassification(Classification.Fiction), A.Book.WithClassification(Classification.Fiction)).Build();
+
+            sut.DisplayFilteredBooks(Publisher.Humanitas, Classification.NonFiction);
+
+            sensor.ErrorText.Should().Contain("No books");
+
         }
     }
 
