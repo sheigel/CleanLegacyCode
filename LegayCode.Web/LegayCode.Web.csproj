@@ -69,6 +69,9 @@
     <Compile Include="BookOverview.aspx.designer.cs">
       <DependentUpon>BookOverview.aspx</DependentUpon>
     </Compile>
+    <Compile Include="BookPresenter.cs" />
+    <Compile Include="BookRepository.cs" />
+    <Compile Include="IBookRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

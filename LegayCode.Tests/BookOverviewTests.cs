@@ -9,41 +9,47 @@ namespace LegayCode.Tests
     [TestFixture]
     public class PublisherUnknown
     {
+        private BookPresenter presenter;
+
         [Test]
         public void DisplaysAllGroups()
         {
-            var sut = new BookOverviewSensor
-            {
-                PublisherGroups = new Collection<PublisherBookGroup> {A.PublisherBookGroup.Build()}
-            };
+            var sensor = new BookOverviewSensor {PublisherGroups = new Collection<PublisherBookGroup> {A.PublisherBookGroup.Build()}};
+            presenter = new BookPresenter(sensor, sensor);
 
-            sut.FilterBooks(Publisher.Unknown, Classification.Fiction);
+            presenter.DisplayFilteredBooks(Publisher.Unknown, Classification.Fiction);
 
-            sut.DisplayedBookGroups.Should().HaveCount(1);
+            sensor.DisplayedBookGroups.Should().HaveCount(1);
         }
     }
 
     [TestFixture]
     public class PublisherGroupEmpty
     {
+        private BookPresenter sut;
+
         [Test]
         public void DisplaysErrorMessage_NullPublisherBookGroup()
         {
-            var sut = new BookOverviewSensor {PublisherBookGroup = null};
+            var sensor = new BookOverviewSensor();
+            sut = new BookPresenter(sensor, sensor);
+            sensor.PublisherBookGroup = null;
 
-            sut.FilterBooks(Publisher.Humanitas, Classification.Fiction);
+            sut.DisplayFilteredBooks(Publisher.Humanitas, Classification.Fiction);
 
-            sut.ErrorText.Should().Contain("Humanitas publisher");
+            sensor.ErrorText.Should().Contain("Humanitas publisher");
         }
 
         [Test]
         public void DisplaysErrorMessage_EmptyPublisherBookGroup()
         {
-            var sut = new BookOverviewSensor {PublisherBookGroup = A.PublisherBookGroup.Build()};
+            var sensor = new BookOverviewSensor();
+            sut = new BookPresenter(sensor, sensor);
+            sensor.PublisherBookGroup = A.PublisherBookGroup.Build();
 
-            sut.FilterBooks(Publisher.Humanitas, Classification.Fiction);
+            sut.DisplayFilteredBooks(Publisher.Humanitas, Classification.Fiction);
 
-            sut.ErrorText.Should().Contain("Humanitas publisher");
+            sensor.ErrorText.Should().Contain("Humanitas publisher");
         }
     }
 
@@ -51,36 +57,36 @@ namespace LegayCode.Tests
     [TestFixture]
     public class PublisherGroupHasManyBooks
     {
+        private BookPresenter sut;
+
         [Test]
         public void DisplaysASingleGroupForPublisher_MatchingClassification()
         {
-            var sut = new BookOverviewSensor
-            {
-                PublisherBookGroup = A.PublisherBookGroup.WithBooks(A.Book.WithClassification(Classification.Fiction), A.Book.WithClassification(Classification.Fiction)).Build()
-            };
+            var sensor = new BookOverviewSensor();
+            sut = new BookPresenter(sensor, sensor);
+            sensor.PublisherBookGroup =
+                A.PublisherBookGroup.WithBooks(A.Book.WithClassification(Classification.Fiction),
+                    A.Book.WithClassification(Classification.Fiction)).Build();
 
-            sut.FilterBooks(Publisher.Humanitas, Classification.Fiction);
+            sut.DisplayFilteredBooks(Publisher.Humanitas, Classification.Fiction);
 
-            sut.DisplayedBookGroups.Should().HaveCount(1);
-            sut.DisplayedBookGroups.First().Books.Should().HaveCount(2);
+            sensor.DisplayedBookGroups.Should().HaveCount(1);
+            sensor.DisplayedBookGroups.First().Books.Should().HaveCount(2);
         }
 
         [Test]
         public void DisplaysOnlyBooksMatchingClassification()
         {
-            var sut = new BookOverviewSensor
-            {
-                PublisherBookGroup =
-                    A.PublisherBookGroup.WithBooks(
-                        A.Book.WithClassification(Classification.NonFiction),
-                        A.Book.WithClassification(Classification.Fiction),
-                        A.Book.WithClassification(Classification.Fiction)).Build()
-            };
+            var sensor = new BookOverviewSensor();
+            sut = new BookPresenter(sensor, sensor);
+            sensor.PublisherBookGroup =
+                A.PublisherBookGroup.WithBooks(A.Book.WithClassification(Classification.NonFiction),
+                    A.Book.WithClassification(Classification.Fiction), A.Book.WithClassification(Classification.Fiction)).Build();
 
-            sut.FilterBooks(Publisher.Humanitas, Classification.Fiction);
+            sut.DisplayFilteredBooks(Publisher.Humanitas, Classification.Fiction);
 
-            sut.DisplayedBookGroups.Should().HaveCount(1);
-            sut.DisplayedBookGroups.First().Books.Should().HaveCount(2);
+            sensor.DisplayedBookGroups.Should().HaveCount(1);
+            sensor.DisplayedBookGroups.First().Books.Should().HaveCount(2);
         }
     }
 
@@ -91,43 +97,43 @@ namespace LegayCode.Tests
         public void SetUp()
         {
             bookClassification = Classification.Fiction;
-            sut = new BookOverviewSensor
-            {
-                PublisherBookGroup =
-                    A.PublisherBookGroup.WithBooks(A.Book.WithClassification(bookClassification)).Build()
-            };
+            sensor = new BookOverviewSensor();
+            sensor.PublisherBookGroup = A.PublisherBookGroup.WithBooks(A.Book.WithClassification(bookClassification)).Build();
+            sut = new BookPresenter(sensor, sensor);
         }
 
-        private BookOverviewSensor sut;
+        private BookPresenter sut;
         private Classification bookClassification;
+        private BookOverviewSensor sensor;
 
         [Test]
         public void DisplaysErrorMessage_BookDoesNotMatchClassification()
         {
-            sut.FilterBooks(Publisher.Humanitas, Classification.NonFiction);
+            sut.DisplayFilteredBooks(Publisher.Humanitas, Classification.NonFiction);
 
-            sut.ErrorText.Should().Contain("classification NonFiction available");
+            sensor.ErrorText.Should().Contain("classification NonFiction available");
         }
 
         [Test]
         public void DisplaysBookDetails_NoSpecifiedClassification()
         {
-            sut.FilterBooks(Publisher.Humanitas, Classification.Unknown);
+            sut.DisplayFilteredBooks(Publisher.Humanitas, Classification.Unknown);
 
-            sut.DisplayedBook.Should().NotBeNull();
+            sensor.DisplayedBook.Should().NotBeNull();
         }
 
         [Test]
         public void DisplaysBookDetails_BookMatchesClassification()
         {
-            sut.FilterBooks(Publisher.Humanitas, bookClassification);
+            sut.DisplayFilteredBooks(Publisher.Humanitas, bookClassification);
 
-            sut.DisplayedBook.Should().NotBeNull();
+            sensor.DisplayedBook.Should().NotBeNull();
         }
     }
 
 
-    public class BookOverviewSensor : BookOverview
+    public class BookOverviewSensor : IBookOverview, IBookRepository
+
     {
         public Collection<PublisherBookGroup> PublisherGroups { get; set; }
         public PublisherBookGroup PublisherBookGroup { get; set; }
@@ -136,29 +142,29 @@ namespace LegayCode.Tests
         public Book DisplayedBook { get; set; }
 
 
-        protected override Collection<PublisherBookGroup> GetPublisherBookGroups()
-        {
-            return PublisherGroups;
-        }
-
-        protected override void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
+        public void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
         {
             DisplayedBookGroups = publisherBookGroups;
         }
 
-        protected override void DisplayBookDetails(Book book)
+        public void DisplayBookDetails(Book book)
         {
             DisplayedBook = book;
         }
 
-        protected override PublisherBookGroup GetPublisherBookGroup(Publisher publisherQuery)
-        {
-            return PublisherBookGroup;
-        }
-
-        protected override void ShowNoBooksPanel(string noBooksText)
+        public void ShowNoBooksPanel(string noBooksText)
         {
             ErrorText = noBooksText;
+        }
+
+        public Collection<PublisherBookGroup> GetPublisherBookGroups()
+        {
+            return PublisherGroups;
+        }
+
+        public PublisherBookGroup GetPublisherBookGroup(Publisher publisherQuery)
+        {
+            return PublisherBookGroup;
         }
     }
 }
