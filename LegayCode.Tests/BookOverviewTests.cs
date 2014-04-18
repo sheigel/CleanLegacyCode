@@ -56,7 +56,7 @@ namespace LegayCode.Tests
         {
             var sut = new BookOverviewSensor
             {
-                PublisherBookGroup = A.PublisherBookGroup.WithBooks(A.Book, A.Book).Build()
+                PublisherBookGroup = A.PublisherBookGroup.WithBooks(A.Book.WithClassification(Classification.Fiction), A.Book.WithClassification(Classification.Fiction)).Build()
             };
 
             sut.FilterBooks(Publisher.Humanitas, Classification.Fiction);

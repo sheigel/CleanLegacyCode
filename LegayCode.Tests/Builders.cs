@@ -40,7 +40,7 @@ namespace LegayCode.Tests
 
     public class BookBuilder
     {
-        private Classification classification = Classification.Unknown;
+        private Classification classification = Classification.NonFiction;
 
         public Book Build()
         {
