@@ -9,9 +9,6 @@ namespace LegayCode.Tests
     [TestFixture]
     public class PublisherUnknown
     {
-        private BookPresenter sut;
-        private BookOverviewSensor sensor;
-
         [SetUp]
         public virtual void SetUp()
         {
@@ -19,24 +16,25 @@ namespace LegayCode.Tests
             sut = new BookPresenter(sensor, sensor);
         }
 
+        private BookPresenter sut;
+        private BookOverviewSensor sensor;
+
         [Test]
         public void DisplaysAllGroups()
         {
-            sensor.PublisherGroups = new Collection<PublisherBookGroup> { A.PublisherBookGroup.Build() };
+            sensor.PublisherGroups = A.PublisherBookGroup.WithBooks(A.Book).Build().Books;
 
             sut.DisplayFilteredBooks(Publisher.Unknown, Classification.Fiction);
 
             sensor.DisplayedBookGroups.Should().HaveCount(1);
         }
-
-       
     }
 
     [TestFixture]
     public class PublisherGroupEmpty
     {
         private BookPresenter sut;
-        
+
         [Test]
         public void DisplaysErrorMessage_EmptyPublisherBookGroup()
         {
@@ -82,13 +80,12 @@ namespace LegayCode.Tests
         public void DisplaysAnErrorMessage_NoBooksMatchClassification()
         {
             sensor.PublisherBookGroup =
-                A.PublisherBookGroup.WithBooks(
-                    A.Book.WithClassification(Classification.Fiction), A.Book.WithClassification(Classification.Fiction)).Build();
+                A.PublisherBookGroup.WithBooks(A.Book.WithClassification(Classification.Fiction),
+                    A.Book.WithClassification(Classification.Fiction)).Build();
 
             sut.DisplayFilteredBooks(Publisher.Humanitas, Classification.NonFiction);
 
             sensor.ErrorText.Should().Contain("No books");
-
         }
     }
 
@@ -134,10 +131,10 @@ namespace LegayCode.Tests
     }
 
 
-    public class BookOverviewSensor : BookRepository,IBookOverview, IBookRepository
+    public class BookOverviewSensor : BookRepository, IBookOverview, IBookRepository
 
     {
-        public Collection<PublisherBookGroup> PublisherGroups { get; set; }
+        public BookCollection PublisherGroups { get; set; }
         public PublisherBookGroup PublisherBookGroup { get; set; }
         public Collection<PublisherBookGroup> DisplayedBookGroups { get; set; }
         public string ErrorText { get; set; }
@@ -159,7 +156,7 @@ namespace LegayCode.Tests
             ErrorText = noBooksText;
         }
 
-        public override Collection<PublisherBookGroup> GetPublisherBookGroups()
+        public override BookCollection GetBookCollection()
         {
             return PublisherGroups;
         }

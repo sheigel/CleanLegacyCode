@@ -18,42 +18,44 @@ namespace LegayCode
 
         public void DisplayFilteredBooks(Publisher publisherQuery, Classification classificationQuery)
         {
+            BookCollection bookCollection;
             if (publisherQuery == Publisher.Unknown)
             {
-                view.DisplayGroups(repository.GetPublisherBookGroups());
-                return;
+                bookCollection = repository.GetBookCollection();
+                view.DisplayGroups(bookCollection.GetGroups);
             }
+           else {
+               bookCollection = repository.GetPublisherBookGroup(publisherQuery).Books;
+               if (!bookCollection.Any())
+                {
+                    view.ShowNoBooksPanel(String.Format("No books for the {0} publisher available.", publisherQuery));
+                    return;
+                }
+                FilterByClassification(classificationQuery, bookCollection);
 
-            PublisherBookGroup bookGroup = repository.GetPublisherBookGroup(publisherQuery);
-            if (!bookGroup.Books.Any())
-            {
-                view.ShowNoBooksPanel(String.Format("No books for the {0} publisher available.", publisherQuery));
-                return;
+                if (!bookCollection.Any())
+                {
+                    view.ShowNoBooksPanel(String.Format("No books for the classification {0} available.", classificationQuery));
+                    return;
+                }
+
+                if (bookCollection.Count() == 1)
+                {
+                    view.DisplayBookDetails(bookCollection.First());
+                    return;
+                }
+
+            
+                view.DisplayGroups( bookCollection.GetGroups );
             }
-            var publisherBookGroup = FilterByClassification(bookGroup, classificationQuery);
-
-            if (!publisherBookGroup.Books.Any())
-            {
-                view.ShowNoBooksPanel(String.Format("No books for the classification {0} available.", classificationQuery));
-                return;
-            }
-
-            if (publisherBookGroup.Books.Count() == 1)
-            {
-                view.DisplayBookDetails(publisherBookGroup.Books.First());
-                return;
-            }
-
-            view.DisplayGroups(new Collection<PublisherBookGroup> {publisherBookGroup});
         }
 
-        private PublisherBookGroup FilterByClassification(PublisherBookGroup publisherBookGroup, Classification classificationQuery)
+        private static void FilterByClassification(Classification classificationQuery, BookCollection bookCollection)
         {
             if (classificationQuery != Classification.Unknown)
             {
-                publisherBookGroup.Books.Remove(b => b.Classification != classificationQuery);
+                bookCollection.Remove(b => b.Classification != classificationQuery);
             }
-            return publisherBookGroup;
         }
     }
 }

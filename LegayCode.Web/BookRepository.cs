@@ -10,8 +10,8 @@ public  class BookRepository :IBookRepository
         return BookManager.GetBookCollection().GetPublisherGroup(publisherQuery);
     }
 
-    public virtual Collection<PublisherBookGroup> GetPublisherBookGroups()
+    public virtual BookCollection GetBookCollection()
     {
-        return BookManager.GetBookCollection().GetGroups;
+        return BookManager.GetBookCollection();
     }
 }

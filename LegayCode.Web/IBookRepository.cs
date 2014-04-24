@@ -6,6 +6,6 @@ namespace LegayCode
     public interface IBookRepository
     {
         PublisherBookGroup GetPublisherBookGroup(Publisher publisherQuery);
-        Collection<PublisherBookGroup> GetPublisherBookGroups();
+        BookCollection GetBookCollection();
     }
 }
