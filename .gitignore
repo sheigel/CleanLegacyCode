@@ -9,6 +9,7 @@
 *.suo
 *.user
 *.sln.docstates
+*.sln.ide
 
 #NuGet Packages
 /packages
