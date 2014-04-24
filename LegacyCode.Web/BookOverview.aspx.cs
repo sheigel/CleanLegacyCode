@@ -61,14 +61,13 @@ namespace LegacyCode
                         else
                         {
                             //Display no books for classification
-                            ShowNoBooksPanel(string.Format("No books for the classification {0} available.",
-                                QueryStringBookClassification));
+                            ShowNoBooksPanel("We couldn't find any books matching your filter.");
                         }
                     }
                     else if (bookCount == 0)
                     {
                         //Display no books for publisher
-                        ShowNoBooksPanel(string.Format("No books for the {0} publisher available.", QueryStringPublisher));
+                        ShowNoBooksPanel("We couldn't find any books matching your filter.");
                     }
                     else
                     {
