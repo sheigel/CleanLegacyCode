@@ -43,40 +43,21 @@ namespace LegacyCode
                 ShowNoBooksPanel("We couldn't find any books matching your filter.");
                 return;
             }
-            var bookCollection = publisherBookGroup.Books;
+            var bookCollection = publisherBookGroup.Books.WhereClassification(classificationFilter);
+
+            if (bookCollection.Count() == 0)
+            {
+                ShowNoBooksPanel("We couldn't find any books matching your filter.");
+                return;
+            }
 
             if (bookCollection.Count() == 1)
             {
-                var book = bookCollection.First();
-
-                if (classificationFilter == Classification.Unknown || book.Classification == classificationFilter)
-                {
-                    DisplayBookDetails(book);
-                }
-                else
-                {
-                    ShowNoBooksPanel("We couldn't find any books matching your filter.");
-                }
+                DisplayBookDetails(bookCollection.First());
+                return;
             }
-            else
-            {
-                bookCollection = bookCollection.WhereClassification(classificationFilter);
 
-                if (bookCollection.Count() == 0)
-                {
-                    ShowNoBooksPanel("We couldn't find any books matching your filter.");
-                    return;
-                }
-
-                if (bookCollection.Count() == 1)
-                {
-                    var book = bookCollection.First();
-                    DisplayBookDetails(book);
-                    return;
-                }
-
-                DisplayGroups(bookCollection.GetGroups);
-            }
+            DisplayGroups(bookCollection.GetGroups);
         }
 
         protected virtual void DisplayBookDetails(Book book)
