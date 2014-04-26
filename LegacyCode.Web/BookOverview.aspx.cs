@@ -30,14 +30,13 @@ namespace LegacyCode
         public void DisplayFilteredBooks(Publisher publisherFilter, Classification classificationFilter)
         {
             var bookCollection = GetBookCollection();
-            if (publisherFilter == Publisher.Unknown)
+            if (publisherFilter != Publisher.Unknown)
             {
-                DisplayGroups(bookCollection.GetGroups);
-                return;
+                var publisherId = GetPublisherId(publisherFilter);
+                bookCollection = bookCollection.WherePublisher(publisherId);
             }
 
-            var publisherId = GetPublisherId(publisherFilter);
-            bookCollection = bookCollection.WherePublisher(publisherId).WhereClassification(classificationFilter);
+            bookCollection = bookCollection.WhereClassification(classificationFilter);
 
             if (bookCollection.Count() == 0)
             {
