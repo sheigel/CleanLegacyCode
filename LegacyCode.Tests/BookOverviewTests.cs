@@ -168,17 +168,17 @@ namespace LegacyCode.Tests
         public string ErrorMessage { get; set; }
         public Book DisplayedBook { get; set; }
 
-        protected override void ShowNoBooksPanel(string noBooksText)
+        public override void DisplayError(string noBooksText)
         {
             ErrorMessage = noBooksText;
         }
 
-        protected override void DisplayBookDetails(Book book)
+        public override void DisplayBookDetails(Book book)
         {
             DisplayedBook = book;
         }
 
-        protected override void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
+        public override void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
         {
             DisplayedBookGroups = publisherBookGroups;
         }

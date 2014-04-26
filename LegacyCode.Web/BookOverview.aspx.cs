@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Web.UI;
 using LegacyCode.Bll;
 
@@ -35,54 +34,22 @@ namespace LegacyCode
 
         public void DisplayFilteredBooks(Publisher publisherFilter, Classification classificationFilter)
         {
-            var bookCollection = FilterBooks(publisherFilter, classificationFilter);
-
-            DisplayBooks(bookCollection);
+            new BookOverviewPresenter(bookRepository, this).DisplayFilteredBooks(publisherFilter, classificationFilter);
         }
 
-        private BookCollection FilterBooks(Publisher publisherFilter, Classification classificationFilter)
-        {
-            var bookCollection = bookRepository.GetBookCollection();
-
-            if (publisherFilter != Publisher.Unknown)
-            {
-                var publisherId = bookRepository.GetPublisherId(publisherFilter);
-                bookCollection = bookCollection.WherePublisher(publisherId);
-            }
-
-            return bookCollection.WhereClassification(classificationFilter);
-        }
-
-        private void DisplayBooks(BookCollection bookCollection)
-        {
-            if (bookCollection.Count() == 0)
-            {
-                ShowNoBooksPanel("We couldn't find any books matching your filter.");
-                return;
-            }
-
-            if (bookCollection.Count() == 1)
-            {
-                DisplayBookDetails(bookCollection.First());
-                return;
-            }
-
-            DisplayGroups(bookCollection.GetGroups);
-        }
-
-        protected virtual void ShowNoBooksPanel(string noBooksText)
+        public virtual void DisplayError(string noBooksText)
         {
             errorLabel.Text = Resources.GetString(noBooksText);
         }
 
-        protected virtual void DisplayBookDetails(Book book)
+        public virtual void DisplayBookDetails(Book book)
         {
             var targetPage = GetTargetPage(book.ISBN, book.Publisher);
 
             Response.Redirect(targetPage.ToString());
         }
 
-        protected virtual void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
+        public virtual void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
         {
             gridView.DataSource = publisherBookGroups;
             gridView.DataBind();
