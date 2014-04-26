@@ -12,13 +12,13 @@ namespace LegacyCode.Tests
         public class PublisherUnknown : BookOverviewTests
         {
             [Test]
-            public void DisplayBooksGroupedByPublisher()
+            public void DisplayAllGroups()
             {
-                var sut = CreateSut();
+                BookOverviewSpy sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira), A.Book.WithPublisher(Publisher.Humanitas));
 
-                sut.DisplayFilteredBooks(Publisher.Unknown, Classification.Fiction);
+                sut.DisplayFilteredBooks(Publisher.Unknown, Classification.Unknown);
 
-                sut.DisplayedBookGroups.Should().NotBeNull();
+                sut.DisplayedBookGroups.Should().HaveCount(2);
             }
         }
 
