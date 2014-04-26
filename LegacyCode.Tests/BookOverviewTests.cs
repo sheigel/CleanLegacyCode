@@ -51,11 +51,14 @@ namespace LegacyCode.Tests
         public class PublisherGroupsHasMoreThanOneBook : BookOverviewTests
         {
             [Test]
-            public void DisplayGroup()
+            public void DisplayGroupContainingBooksMatchingClassification()
             {
-                var sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira), A.Book.WithPublisher(Publisher.Nemira));
+                const Classification matchingClassification = Classification.NonFiction;
+                var sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira).WithClassification(matchingClassification),
+                    A.Book.WithPublisher(Publisher.Nemira).WithClassification(matchingClassification),
+                    A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.Fiction));
 
-                sut.DisplayFilteredBooks(Publisher.Nemira, Classification.Fiction);
+                sut.DisplayFilteredBooks(Publisher.Nemira, matchingClassification);
 
                 sut.DisplayedBookGroups.Should().HaveCount(1);
                 sut.DisplayedBookGroups.First().Books.Should().HaveCount(2);
@@ -68,7 +71,7 @@ namespace LegacyCode.Tests
             [Test]
             public void DisplayErrorMessage_ClassificationNotFound()
             {
-                BookOverviewSpy sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.Fiction));
+                var sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.Fiction));
 
                 sut.DisplayFilteredBooks(Publisher.Nemira, Classification.NonFiction);
 
@@ -78,7 +81,7 @@ namespace LegacyCode.Tests
             [Test]
             public void DisplayBookDetails_ClassificationUnknown()
             {
-                BookOverviewSpy sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira));
+                var sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira));
 
                 sut.DisplayFilteredBooks(Publisher.Nemira, Classification.Unknown);
 
@@ -88,7 +91,7 @@ namespace LegacyCode.Tests
             [Test]
             public void DisplayBookDetails_ClassificationFound()
             {
-                BookOverviewSpy sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.Fiction));
+                var sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.Fiction));
 
                 sut.DisplayFilteredBooks(Publisher.Nemira, Classification.Fiction);
 
