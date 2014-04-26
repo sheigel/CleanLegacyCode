@@ -13,8 +13,7 @@ namespace LegacyCode.Tests
             [Test]
             public void DisplayBooksGroupedByPublisher()
             {
-                var sut = new BookOverviewSpy();
-                sut.BookCollection = new BookCollection();
+                var sut = CreateSut();
 
                 sut.DisplayFilteredBooks(Publisher.Unknown);
 
@@ -28,14 +27,20 @@ namespace LegacyCode.Tests
             [Test]
             public void DisplayErrorMessage_InvalidPublisher()
             {
-                var sut = new BookOverviewSpy();
-                sut.BookCollection = new BookCollection();
+                var sut = CreateSut();
 
                 var invalidPublisherId = -1;
                 sut.DisplayFilteredBooks((Publisher) invalidPublisherId);
 
                 sut.ErrorMessage.Should().Contain("couldn't find");
             }
+        }
+
+        private static BookOverviewSpy CreateSut()
+        {
+            var sut = new BookOverviewSpy();
+            sut.BookCollection = new BookCollection();
+            return sut;
         }
     }
 
@@ -51,9 +56,10 @@ namespace LegacyCode.Tests
         {
             return BookCollection;
         }
+
         protected override int GetPublisherId(Publisher publisherFilter)
         {
-            return (int)publisherFilter;
+            return (int) publisherFilter;
         }
 
         protected override void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
