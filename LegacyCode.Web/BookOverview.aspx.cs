@@ -57,9 +57,7 @@ namespace LegacyCode
                         if (classificationFilter == Classification.Unknown || book.Classification == classificationFilter)
                         {
                             //Display book details
-                            Uri targetPage = GetTargetPage(book.ISBN, book.Publisher);
-
-                            Response.Redirect(targetPage.ToString());
+                            DisplayBookDetails(book);
                         }
                         else
                         {
@@ -86,6 +84,13 @@ namespace LegacyCode
                     ShowNoBooksPanel("We couldn't find any books matching your filter.");
                 }
             }
+        }
+
+        protected virtual void DisplayBookDetails(Book book)
+        {
+            Uri targetPage = GetTargetPage(book.ISBN, book.Publisher);
+
+            Response.Redirect(targetPage.ToString());
         }
 
         protected virtual int GetPublisherId(Publisher publisherFilter)

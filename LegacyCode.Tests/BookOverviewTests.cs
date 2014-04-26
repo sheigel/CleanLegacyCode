@@ -74,6 +74,16 @@ namespace LegacyCode.Tests
 
                 sut.ErrorMessage.Should().Contain("couldn't find");
             }
+
+            [Test]
+            public void DisplayBookDetails_ClassificationUnknown()
+            {
+                BookOverviewSpy sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira));
+
+                sut.DisplayFilteredBooks(Publisher.Nemira, Classification.Unknown);
+
+                sut.DisplayedBook.Should().NotBeNull();
+            }
         }
 
         private static BookOverviewSpy CreateSut(params BookBuilder[] books)
@@ -89,6 +99,7 @@ namespace LegacyCode.Tests
 
         public Collection<PublisherBookGroup> DisplayedBookGroups { get; set; }
         public string ErrorMessage { get; set; }
+        public Book DisplayedBook { get; set; }
 
         protected override BookCollection GetBookCollection()
         {
@@ -108,6 +119,11 @@ namespace LegacyCode.Tests
         protected override void ShowNoBooksPanel(string noBooksText)
         {
             ErrorMessage = noBooksText;
+        }
+
+        protected override void DisplayBookDetails(Book book)
+        {
+            DisplayedBook = book;
         }
     }
 }
