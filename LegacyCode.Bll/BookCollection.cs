@@ -93,5 +93,17 @@ namespace LegacyCode.Bll
                 Remove(book);
             }
         }
+
+        public BookCollection WhereClassification(Classification classificationFilter)
+        {
+            var result = SerializerTool.DeepClone(this);
+            if (classificationFilter == Classification.Unknown)
+            {
+                return result;
+            }
+            result.Remove(b => b.Classification != classificationFilter);
+
+            return result;
+        }
     }
 }

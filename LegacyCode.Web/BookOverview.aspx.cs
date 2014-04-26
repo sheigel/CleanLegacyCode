@@ -43,10 +43,11 @@ namespace LegacyCode
                 ShowNoBooksPanel("We couldn't find any books matching your filter.");
                 return;
             }
+            var bookCollection = publisherBookGroup.Books;
 
-            if (publisherBookGroup.Books.Count() == 1)
+            if (bookCollection.Count() == 1)
             {
-                var book = publisherBookGroup.Books.First();
+                var book = bookCollection.First();
 
                 if (classificationFilter == Classification.Unknown || book.Classification == classificationFilter)
                 {
@@ -59,26 +60,22 @@ namespace LegacyCode
             }
             else
             {
-                if (classificationFilter != Classification.Unknown)
-                {
-                    publisherBookGroup.Books.Remove(b => b.Classification != classificationFilter);
-                }
+                bookCollection = bookCollection.WhereClassification(classificationFilter);
 
-                if (publisherBookGroup.Books.Count() == 0)
+                if (bookCollection.Count() == 0)
                 {
                     ShowNoBooksPanel("We couldn't find any books matching your filter.");
                     return;
                 }
 
-                if (publisherBookGroup.Books.Count() == 1)
+                if (bookCollection.Count() == 1)
                 {
-                    var book = publisherBookGroup.Books.First();
+                    var book = bookCollection.First();
                     DisplayBookDetails(book);
+                    return;
                 }
 
-                var publisherGroups = new Collection<PublisherBookGroup> {publisherBookGroup};
-
-                DisplayGroups(publisherGroups);
+                DisplayGroups(bookCollection.GetGroups);
             }
         }
 
