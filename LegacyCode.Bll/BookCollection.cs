@@ -62,17 +62,22 @@ namespace LegacyCode.Bll
         public PublisherBookGroup GetPublisherGroup(Publisher publisher)
         {
             int publisherId = BookManager.GetPublisherId(publisher);
+            return GetPublisherGroupById(publisherId);
+        }
+
+        public PublisherBookGroup GetPublisherGroupById(int publisherId)
+        {
             if (publisherId > 0)
             {
                 PublisherBookGroup group = GetGroups.FirstOrDefault(p => p.PublisherGroupId == publisherId);
-                if (group != null)
-				{
-					return group;
-				}
-				else 
-				{
-					return new PublisherBookGroup(new BookCollection(), publisherId, string.Empty);
-				}
+                if (@group != null)
+                {
+                    return @group;
+                }
+                else
+                {
+                    return new PublisherBookGroup(new BookCollection(), publisherId, string.Empty);
+                }
             }
             else
             {
