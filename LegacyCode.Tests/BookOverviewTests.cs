@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using FluentAssertions;
 using LegacyCode.Bll;
 using NUnit.Framework;
@@ -15,7 +16,7 @@ namespace LegacyCode.Tests
             {
                 var sut = CreateSut();
 
-                sut.DisplayFilteredBooks(Publisher.Unknown);
+                sut.DisplayFilteredBooks(Publisher.Unknown, Classification.Fiction);
 
                 sut.DisplayedBookGroups.Should().NotBeNull();
             }
@@ -30,7 +31,7 @@ namespace LegacyCode.Tests
                 var sut = CreateSut();
 
                 var invalidPublisherId = -1;
-                sut.DisplayFilteredBooks((Publisher) invalidPublisherId);
+                sut.DisplayFilteredBooks((Publisher) invalidPublisherId, Classification.Fiction);
 
                 sut.ErrorMessage.Should().Contain("couldn't find");
             }
@@ -40,17 +41,30 @@ namespace LegacyCode.Tests
             {
                 var sut = CreateSut();
 
-                sut.DisplayFilteredBooks(Publisher.Nemira);
+                sut.DisplayFilteredBooks(Publisher.Nemira, Classification.Fiction);
 
                 sut.ErrorMessage.Should().Contain("couldn't find");
             }
         }
 
-        private static BookOverviewSpy CreateSut()
+        [TestFixture]
+        public class PublisherGroupsHasMoreThanOneBook : BookOverviewTests
         {
-            var sut = new BookOverviewSpy();
-            sut.BookCollection = new BookCollection();
-            return sut;
+            [Test]
+            public void DisplayGroup()
+            {
+                var sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira), A.Book.WithPublisher(Publisher.Nemira));
+
+                sut.DisplayFilteredBooks(Publisher.Nemira, Classification.Fiction);
+
+                sut.DisplayedBookGroups.Should().HaveCount(1);
+                sut.DisplayedBookGroups.First().Books.Should().HaveCount(2);
+            }
+        }
+
+        private static BookOverviewSpy CreateSut(params BookBuilder[] books)
+        {
+            return new BookOverviewSpy { BookCollection = A.BookCollection.WithBooks(books).Build() };
         }
     }
 

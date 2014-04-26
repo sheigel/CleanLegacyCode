@@ -30,10 +30,10 @@ namespace LegacyCode
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            DisplayFilteredBooks(QueryStringPublisher);
+            DisplayFilteredBooks(QueryStringPublisher, QueryStringBookClassification);
         }
 
-        public void DisplayFilteredBooks(Publisher publisherFilter)
+        public void DisplayFilteredBooks(Publisher publisherFilter, Classification classificationFilter)
         {
             if (publisherFilter == Publisher.Unknown)
             {
@@ -54,7 +54,7 @@ namespace LegacyCode
                         // Show details.
                         Book book = publisherBookGroup.Books.First();
 
-                        if (QueryStringBookClassification == Classification.Unknown || book.Classification == QueryStringBookClassification)
+                        if (classificationFilter == Classification.Unknown || book.Classification == classificationFilter)
                         {
                             //Display book details
                             Uri targetPage = GetTargetPage(book.ISBN, book.Publisher);
@@ -77,8 +77,7 @@ namespace LegacyCode
                         var publisherGroups = new Collection<PublisherBookGroup> {publisherBookGroup};
 
                         //Display Groups
-                        gridView.DataSource = publisherGroups;
-                        gridView.DataBind();
+                        DisplayGroups(publisherGroups);
                     }
                 }
                 else
