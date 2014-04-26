@@ -59,8 +59,9 @@ namespace LegacyCode
             }
             else
             {
+                publisherBookGroup.Books.Remove(b => b.Classification != classificationFilter);
                 var publisherGroups = new Collection<PublisherBookGroup> {publisherBookGroup};
-
+                
                 DisplayGroups(publisherGroups);
             }
         }
