@@ -63,6 +63,19 @@ namespace LegacyCode.Tests
                 sut.DisplayedBookGroups.Should().HaveCount(1);
                 sut.DisplayedBookGroups.First().Books.Should().HaveCount(2);
             }
+
+            [Test]
+            public void DisplayGroupContainingAllBooks_ClassificationUnknown()
+            {
+                var sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.NonFiction),
+                    A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.NonFiction),
+                    A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.Fiction));
+
+                sut.DisplayFilteredBooks(Publisher.Nemira, Classification.Unknown);
+
+                sut.DisplayedBookGroups.Should().HaveCount(1);
+                sut.DisplayedBookGroups.First().Books.Should().HaveCount(3);
+            }
         }
 
         [TestFixture]
@@ -101,7 +114,7 @@ namespace LegacyCode.Tests
 
         private static BookOverviewSpy CreateSut(params BookBuilder[] books)
         {
-            return new BookOverviewSpy { BookCollection = A.BookCollection.WithBooks(books).Build() };
+            return new BookOverviewSpy {BookCollection = A.BookCollection.WithBooks(books).Build()};
         }
     }
 
