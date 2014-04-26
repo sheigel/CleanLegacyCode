@@ -84,6 +84,16 @@ namespace LegacyCode.Tests
 
                 sut.DisplayedBook.Should().NotBeNull();
             }
+
+            [Test]
+            public void DisplayBookDetails_ClassificationFound()
+            {
+                BookOverviewSpy sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.Fiction));
+
+                sut.DisplayFilteredBooks(Publisher.Nemira, Classification.Fiction);
+
+                sut.DisplayedBook.Should().NotBeNull();
+            }
         }
 
         private static BookOverviewSpy CreateSut(params BookBuilder[] books)
