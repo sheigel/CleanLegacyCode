@@ -42,7 +42,7 @@ namespace LegacyCode
             }
             else
             {
-                PublisherBookGroup publisherBookGroup = BookManager.GetBookCollection().GetPublisherGroup(publisherFilter);
+                PublisherBookGroup publisherBookGroup = GetBookCollection().GetPublisherGroup(publisherFilter);
 
                 if (publisherBookGroup != null)
                 {

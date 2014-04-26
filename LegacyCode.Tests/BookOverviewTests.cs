@@ -15,10 +15,24 @@ namespace LegacyCode.Tests
             {
                 var sut = new BookOverviewSpy();
                 sut.BookCollection = new BookCollection();
-                
+
                 sut.DisplayFilteredBooks(Publisher.Unknown);
 
                 sut.DisplayedBookGroups.Should().NotBeNull();
+            }
+        }
+
+        [TestFixture]
+        public class PublisherGroupIsEmpty : BookOverviewTests
+        {
+            [Test]
+            public void DisplayErrorMessage_InvalidPublisher()
+            {
+                var sut = new BookOverviewSpy();
+                sut.BookCollection = new BookCollection();
+
+                var invalidPublisherId = -1;
+                sut.DisplayFilteredBooks((Publisher) invalidPublisherId);
             }
         }
     }
@@ -33,6 +47,7 @@ namespace LegacyCode.Tests
         {
             return BookCollection;
         }
+
         protected override void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
         {
             DisplayedBookGroups = publisherBookGroups;
