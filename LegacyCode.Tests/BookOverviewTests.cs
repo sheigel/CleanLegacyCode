@@ -33,6 +33,8 @@ namespace LegacyCode.Tests
 
                 var invalidPublisherId = -1;
                 sut.DisplayFilteredBooks((Publisher) invalidPublisherId);
+
+                sut.ErrorMessage.Should().Contain("couldn't find");
             }
         }
     }
@@ -40,8 +42,10 @@ namespace LegacyCode.Tests
 
     public class BookOverviewSpy : BookOverview
     {
-        public Collection<PublisherBookGroup> DisplayedBookGroups { get; set; }
         public BookCollection BookCollection { get; set; }
+
+        public Collection<PublisherBookGroup> DisplayedBookGroups { get; set; }
+        public string ErrorMessage { get; set; }
 
         protected override BookCollection GetBookCollection()
         {
@@ -55,6 +59,11 @@ namespace LegacyCode.Tests
         protected override void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
         {
             DisplayedBookGroups = publisherBookGroups;
+        }
+
+        protected override void ShowNoBooksPanel(string noBooksText)
+        {
+            ErrorMessage = noBooksText;
         }
     }
 }

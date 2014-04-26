@@ -23,7 +23,7 @@ namespace LegacyCode
             throw new DependencyException();
         }
 
-        private void ShowNoBooksPanel(string noBooksText)
+        protected virtual void ShowNoBooksPanel(string noBooksText)
         {
             errorLabel.Text = Resources.GetString(noBooksText);
         }
