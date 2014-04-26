@@ -30,12 +30,12 @@ namespace LegacyCode
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            DisplayFilteredBooks();
+            DisplayFilteredBooks(QueryStringPublisher);
         }
 
-        public void DisplayFilteredBooks()
+        public void DisplayFilteredBooks(Publisher publisherFilter)
         {
-            if (QueryStringPublisher == Publisher.Unknown)
+            if (publisherFilter == Publisher.Unknown)
             {
                 //Display groups
                 gridView.DataSource = BookManager.GetBookCollection().GetGroups;
@@ -43,7 +43,7 @@ namespace LegacyCode
             }
             else
             {
-                PublisherBookGroup publisherBookGroup = BookManager.GetBookCollection().GetPublisherGroup(QueryStringPublisher);
+                PublisherBookGroup publisherBookGroup = BookManager.GetBookCollection().GetPublisherGroup(publisherFilter);
 
                 if (publisherBookGroup != null)
                 {

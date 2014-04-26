@@ -14,7 +14,7 @@ namespace LegacyCode.Tests
             {
                 var sut = new BookOverview();
 
-                sut.DisplayFilteredBooks();
+                sut.DisplayFilteredBooks(Publisher.Unknown);
 
             }
         }
