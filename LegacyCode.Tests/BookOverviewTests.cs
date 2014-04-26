@@ -62,6 +62,20 @@ namespace LegacyCode.Tests
             }
         }
 
+        [TestFixture]
+        public class PublisherGroupsHasOneBook : BookOverviewTests
+        {
+            [Test]
+            public void DisplayErrorMessage_ClassificationNotFound()
+            {
+                BookOverviewSpy sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.Fiction));
+
+                sut.DisplayFilteredBooks(Publisher.Nemira, Classification.NonFiction);
+
+                sut.ErrorMessage.Should().Contain("couldn't find");
+            }
+        }
+
         private static BookOverviewSpy CreateSut(params BookBuilder[] books)
         {
             return new BookOverviewSpy { BookCollection = A.BookCollection.WithBooks(books).Build() };
