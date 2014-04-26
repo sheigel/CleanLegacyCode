@@ -47,6 +47,10 @@ namespace LegacyCode.Tests
         {
             return BookCollection;
         }
+        protected override int GetPublisherId(Publisher publisherFilter)
+        {
+            return (int)publisherFilter;
+        }
 
         protected override void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
         {

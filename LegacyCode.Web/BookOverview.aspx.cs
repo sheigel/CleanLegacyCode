@@ -42,7 +42,7 @@ namespace LegacyCode
             }
             else
             {
-                int publisherId = BookManager.GetPublisherId(publisherFilter);
+                int publisherId = GetPublisherId(publisherFilter);
                 PublisherBookGroup publisherBookGroup = GetBookCollection().GetPublisherGroupById(publisherId);
 
                 if (publisherBookGroup != null)
@@ -87,6 +87,11 @@ namespace LegacyCode
                     ShowNoBooksPanel("We couldn't find any books matching your filter.");
                 }
             }
+        }
+
+        protected virtual int GetPublisherId(Publisher publisherFilter)
+        {
+            return BookManager.GetPublisherId(publisherFilter);
         }
 
         protected virtual void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
