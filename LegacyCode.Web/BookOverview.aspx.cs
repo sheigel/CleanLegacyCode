@@ -12,6 +12,17 @@ namespace LegacyCode
 
         private static Classification QueryStringBookClassification { get { throw new DependencyException(); } }
 
+        private readonly IBookRepository bookRepository;
+
+        public BookOverview() : this(new BookRepository())
+        {
+        }
+
+        public BookOverview(IBookRepository bookRepository)
+        {
+            this.bookRepository = bookRepository;
+        }
+
         private static Uri GetTargetPage(long bookId, Publisher publisher)
         {
             throw new DependencyException();
@@ -31,15 +42,15 @@ namespace LegacyCode
 
         private BookCollection FilterBooks(Publisher publisherFilter, Classification classificationFilter)
         {
-            var bookCollection = GetBookCollection();
+            var bookCollection = bookRepository.GetBookCollection();
+
             if (publisherFilter != Publisher.Unknown)
             {
-                var publisherId = GetPublisherId(publisherFilter);
+                var publisherId = bookRepository.GetPublisherId(publisherFilter);
                 bookCollection = bookCollection.WherePublisher(publisherId);
             }
 
-            bookCollection = bookCollection.WhereClassification(classificationFilter);
-            return bookCollection;
+            return bookCollection.WhereClassification(classificationFilter);
         }
 
         private void DisplayBooks(BookCollection bookCollection)
@@ -75,16 +86,6 @@ namespace LegacyCode
         {
             gridView.DataSource = publisherBookGroups;
             gridView.DataBind();
-        }
-
-        protected virtual int GetPublisherId(Publisher publisherFilter)
-        {
-            return BookManager.GetPublisherId(publisherFilter);
-        }
-
-        protected virtual BookCollection GetBookCollection()
-        {
-            return BookManager.GetBookCollection();
         }
     }
 }

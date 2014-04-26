@@ -2,6 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using LegacyCode.Bll;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace LegacyCode.Tests
@@ -14,7 +15,7 @@ namespace LegacyCode.Tests
             [Test]
             public void DisplayAllGroups_UnknownClassification()
             {
-                BookOverviewSpy sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira), A.Book.WithPublisher(Publisher.Humanitas));
+                var sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira), A.Book.WithPublisher(Publisher.Humanitas));
 
                 sut.DisplayFilteredBooks(Publisher.Unknown, Classification.Unknown);
 
@@ -35,7 +36,7 @@ namespace LegacyCode.Tests
         }
 
         [TestFixture]
-        public class PublisherGroupIsEmpty : BookOverviewTests
+        public class BookCollectionIsEmpty : BookOverviewTests
         {
             [Test]
             public void DisplayErrorMessage_InvalidPublisher()
@@ -60,7 +61,7 @@ namespace LegacyCode.Tests
         }
 
         [TestFixture]
-        public class PublisherGroupsHasMoreThanOneBook : BookOverviewTests
+        public class BookCollectionHasMoreThanOneBook : BookOverviewTests
         {
             [Test]
             public void DisplayGroupContainingBooksMatchingClassification()
@@ -114,7 +115,7 @@ namespace LegacyCode.Tests
         }
 
         [TestFixture]
-        public class PublisherGroupsHasOneBook : BookOverviewTests
+        public class BookCollectionHasOneBook : BookOverviewTests
         {
             [Test]
             public void DisplayErrorMessage_ClassificationNotFound()
@@ -149,33 +150,23 @@ namespace LegacyCode.Tests
 
         private static BookOverviewSpy CreateSut(params BookBuilder[] books)
         {
-            return new BookOverviewSpy {BookCollection = A.BookCollection.WithBooks(books).Build()};
+            var bookRepository = Substitute.For<IBookRepository>();
+            bookRepository.GetBookCollection().Returns(A.BookCollection.WithBooks(books).Build());
+            bookRepository.GetPublisherId(Arg.Any<Publisher>()).Returns(arg => (int) arg.Arg<Publisher>());
+            return new BookOverviewSpy(bookRepository);
         }
     }
 
-
     public class BookOverviewSpy : BookOverview
     {
-        public BookCollection BookCollection { get; set; }
+        public BookOverviewSpy(IBookRepository bookRepository) : base(bookRepository)
+        {
+        }
 
         public Collection<PublisherBookGroup> DisplayedBookGroups { get; set; }
+
         public string ErrorMessage { get; set; }
         public Book DisplayedBook { get; set; }
-
-        protected override BookCollection GetBookCollection()
-        {
-            return BookCollection;
-        }
-
-        protected override int GetPublisherId(Publisher publisherFilter)
-        {
-            return (int) publisherFilter;
-        }
-
-        protected override void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
-        {
-            DisplayedBookGroups = publisherBookGroups;
-        }
 
         protected override void ShowNoBooksPanel(string noBooksText)
         {
@@ -185,6 +176,11 @@ namespace LegacyCode.Tests
         protected override void DisplayBookDetails(Book book)
         {
             DisplayedBook = book;
+        }
+
+        protected override void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
+        {
+            DisplayedBookGroups = publisherBookGroups;
         }
     }
 }
