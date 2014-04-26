@@ -30,6 +30,11 @@ namespace LegacyCode
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            DisplayFilteredBooks();
+        }
+
+        public void DisplayFilteredBooks()
+        {
             if (QueryStringPublisher == Publisher.Unknown)
             {
                 //Display groups
@@ -38,8 +43,7 @@ namespace LegacyCode
             }
             else
             {
-                PublisherBookGroup publisherBookGroup =
-                    BookManager.GetBookCollection().GetPublisherGroup(QueryStringPublisher);
+                PublisherBookGroup publisherBookGroup = BookManager.GetBookCollection().GetPublisherGroup(QueryStringPublisher);
 
                 if (publisherBookGroup != null)
                 {
@@ -50,8 +54,7 @@ namespace LegacyCode
                         // Show details.
                         Book book = publisherBookGroup.Books.First();
 
-                        if (QueryStringBookClassification == Classification.Unknown ||
-                            book.Classification == QueryStringBookClassification)
+                        if (QueryStringBookClassification == Classification.Unknown || book.Classification == QueryStringBookClassification)
                         {
                             //Display book details
                             Uri targetPage = GetTargetPage(book.ISBN, book.Publisher);
