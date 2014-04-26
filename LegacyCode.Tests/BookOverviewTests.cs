@@ -88,6 +88,17 @@ namespace LegacyCode.Tests
 
                 sut.DisplayedBook.Should().NotBeNull();
             }
+
+            [Test]
+            public void DisplayErrorMessage_ClassificationNotFound()
+            {
+                var sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.NonFiction),
+                    A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.NonFiction));
+
+                sut.DisplayFilteredBooks(Publisher.Nemira, Classification.Fiction);
+
+                sut.ErrorMessage.Should().Contain("couldn't find");
+            }
         }
 
         [TestFixture]

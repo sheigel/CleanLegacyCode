@@ -67,10 +67,7 @@ namespace LegacyCode
                 if (publisherBookGroup.Books.Count() == 1)
                 {
                     var book = publisherBookGroup.Books.First();
-
-                    {
-                        DisplayBookDetails(book);
-                    }
+                    DisplayBookDetails(book);
                 }
 
                 var publisherGroups = new Collection<PublisherBookGroup> {publisherBookGroup};
