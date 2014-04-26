@@ -64,6 +64,15 @@ namespace LegacyCode
                     publisherBookGroup.Books.Remove(b => b.Classification != classificationFilter);
                 }
 
+                if (publisherBookGroup.Books.Count() == 1)
+                {
+                    var book = publisherBookGroup.Books.First();
+
+                    {
+                        DisplayBookDetails(book);
+                    }
+                }
+
                 var publisherGroups = new Collection<PublisherBookGroup> {publisherBookGroup};
                 
                 DisplayGroups(publisherGroups);
