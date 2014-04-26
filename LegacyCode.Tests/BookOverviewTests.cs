@@ -76,6 +76,18 @@ namespace LegacyCode.Tests
                 sut.DisplayedBookGroups.Should().HaveCount(1);
                 sut.DisplayedBookGroups.First().Books.Should().HaveCount(3);
             }
+
+            [Test]
+            public void DisplayBookDetails_OnlyOneBookMatchesBothFilters()
+            {
+                var sut = CreateSut(A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.Fiction),
+                    A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.NonFiction),
+                    A.Book.WithPublisher(Publisher.Nemira).WithClassification(Classification.Fiction));
+
+                sut.DisplayFilteredBooks(Publisher.Nemira, Classification.NonFiction);
+
+                sut.DisplayedBook.Should().NotBeNull();
+            }
         }
 
         [TestFixture]
