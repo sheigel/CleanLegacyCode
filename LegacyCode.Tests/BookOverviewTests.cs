@@ -34,6 +34,16 @@ namespace LegacyCode.Tests
 
                 sut.ErrorMessage.Should().Contain("couldn't find");
             }
+
+            [Test]
+            public void DisplayErrorMessage_PublisherNotFound()
+            {
+                var sut = CreateSut();
+
+                sut.DisplayFilteredBooks(Publisher.Nemira);
+
+                sut.ErrorMessage.Should().Contain("couldn't find");
+            }
         }
 
         private static BookOverviewSpy CreateSut()
