@@ -94,6 +94,17 @@ namespace LegacyCode.Bll
             }
         }
 
+        public BookCollection WherePublisher(int publisherId)
+        {
+            var publisherGroupById = GetPublisherGroupById(publisherId);
+            if (publisherGroupById == null)
+            {
+                return new BookCollection();
+            }
+
+            return publisherGroupById.Books;
+        }
+
         public BookCollection WhereClassification(Classification classificationFilter)
         {
             var result = SerializerTool.DeepClone(this);

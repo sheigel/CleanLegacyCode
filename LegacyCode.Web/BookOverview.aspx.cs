@@ -29,21 +29,23 @@ namespace LegacyCode
 
         public void DisplayFilteredBooks(Publisher publisherFilter, Classification classificationFilter)
         {
+            var bookCollection = GetBookCollection();
             if (publisherFilter == Publisher.Unknown)
             {
-                DisplayGroups(GetBookCollection().GetGroups);
+                DisplayGroups(bookCollection.GetGroups);
                 return;
             }
 
             var publisherId = GetPublisherId(publisherFilter);
-            var publisherBookGroup = GetBookCollection().GetPublisherGroupById(publisherId);
+            bookCollection = bookCollection.WherePublisher(publisherId);
 
-            if (publisherBookGroup == null || publisherBookGroup.Books.Count() == 0)
+            if (bookCollection.Count() == 0)
             {
                 ShowNoBooksPanel("We couldn't find any books matching your filter.");
                 return;
             }
-            var bookCollection = publisherBookGroup.Books.WhereClassification(classificationFilter);
+
+            bookCollection = bookCollection.WhereClassification(classificationFilter);
 
             if (bookCollection.Count() == 0)
             {
