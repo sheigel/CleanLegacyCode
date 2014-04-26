@@ -70,6 +70,7 @@
       <DependentUpon>BookOverview.aspx</DependentUpon>
     </Compile>
     <Compile Include="BookOverviewPresenter.cs" />
+    <Compile Include="IBookOverviewView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

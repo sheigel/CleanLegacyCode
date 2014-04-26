@@ -5,13 +5,13 @@ namespace LegacyCode
 {
     public class BookOverviewPresenter
     {
-        private BookOverview view;
+        private IBookOverviewView view;
         private IBookRepository bookRepository;
 
-        public BookOverviewPresenter(IBookRepository bookRepository, BookOverview bookOverview)
+        public BookOverviewPresenter(IBookRepository bookRepository, IBookOverviewView view)
         {
             this.bookRepository = bookRepository;
-            view = bookOverview;
+            this.view = view;
         }
 
         public void DisplayFilteredBooks(Publisher publisherFilter, Classification classificationFilter)

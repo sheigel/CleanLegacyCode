@@ -5,21 +5,17 @@ using LegacyCode.Bll;
 
 namespace LegacyCode
 {
-    public partial class BookOverview : Page
+    public partial class BookOverview : Page, IBookOverviewView
     {
         private static Publisher QueryStringPublisher { get { throw new DependencyException(); } }
 
         private static Classification QueryStringBookClassification { get { throw new DependencyException(); } }
 
-        private readonly IBookRepository bookRepository;
+        private readonly BookOverviewPresenter presenter;
 
-        public BookOverview() : this(new BookRepository())
+        public BookOverview()
         {
-        }
-
-        public BookOverview(IBookRepository bookRepository)
-        {
-            this.bookRepository = bookRepository;
+            presenter = new BookOverviewPresenter(new BookRepository(), this);
         }
 
         private static Uri GetTargetPage(long bookId, Publisher publisher)
@@ -29,12 +25,7 @@ namespace LegacyCode
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            DisplayFilteredBooks(QueryStringPublisher, QueryStringBookClassification);
-        }
-
-        public void DisplayFilteredBooks(Publisher publisherFilter, Classification classificationFilter)
-        {
-            new BookOverviewPresenter(bookRepository, this).DisplayFilteredBooks(publisherFilter, classificationFilter);
+            presenter.DisplayFilteredBooks(QueryStringPublisher, QueryStringBookClassification);
         }
 
         public virtual void DisplayError(string noBooksText)
