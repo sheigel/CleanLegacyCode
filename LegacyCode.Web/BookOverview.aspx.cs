@@ -37,15 +37,7 @@ namespace LegacyCode
             }
 
             var publisherId = GetPublisherId(publisherFilter);
-            bookCollection = bookCollection.WherePublisher(publisherId);
-
-            if (bookCollection.Count() == 0)
-            {
-                ShowNoBooksPanel("We couldn't find any books matching your filter.");
-                return;
-            }
-
-            bookCollection = bookCollection.WhereClassification(classificationFilter);
+            bookCollection = bookCollection.WherePublisher(publisherId).WhereClassification(classificationFilter);
 
             if (bookCollection.Count() == 0)
             {
