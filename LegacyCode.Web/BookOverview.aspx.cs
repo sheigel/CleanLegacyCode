@@ -38,8 +38,7 @@ namespace LegacyCode
             if (publisherFilter == Publisher.Unknown)
             {
                 //Display groups
-                gridView.DataSource = GetBookCollection().GetGroups;
-                gridView.DataBind();
+                DisplayGroups(GetBookCollection().GetGroups);
             }
             else
             {
@@ -87,6 +86,12 @@ namespace LegacyCode
                     ShowNoBooksPanel("We couldn't find any books matching your filter.");
                 }
             }
+        }
+
+        protected virtual void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
+        {
+            gridView.DataSource = publisherBookGroups;
+            gridView.DataBind();
         }
 
         protected virtual BookCollection GetBookCollection()

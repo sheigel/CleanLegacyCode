@@ -1,10 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using FluentAssertions;
 using LegacyCode.Bll;
 using NUnit.Framework;
 
 namespace LegacyCode.Tests
 {
-    [TestFixture]
     public class BookOverviewTests
     {
         [TestFixture]
@@ -15,9 +15,10 @@ namespace LegacyCode.Tests
             {
                 var sut = new BookOverviewSpy();
                 sut.BookCollection = new BookCollection();
-
-
+                
                 sut.DisplayFilteredBooks(Publisher.Unknown);
+
+                sut.DisplayedBookGroups.Should().NotBeNull();
             }
         }
     }
@@ -25,11 +26,16 @@ namespace LegacyCode.Tests
 
     public class BookOverviewSpy : BookOverview
     {
+        public Collection<PublisherBookGroup> DisplayedBookGroups { get; set; }
         public BookCollection BookCollection { get; set; }
 
         protected override BookCollection GetBookCollection()
         {
             return BookCollection;
+        }
+        protected override void DisplayGroups(Collection<PublisherBookGroup> publisherBookGroups)
+        {
+            DisplayedBookGroups = publisherBookGroups;
         }
     }
 }
