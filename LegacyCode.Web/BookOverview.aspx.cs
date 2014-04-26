@@ -64,6 +64,12 @@ namespace LegacyCode
                     publisherBookGroup.Books.Remove(b => b.Classification != classificationFilter);
                 }
 
+                if (publisherBookGroup.Books.Count() == 0)
+                {
+                    ShowNoBooksPanel("We couldn't find any books matching your filter.");
+                    return;
+                }
+
                 if (publisherBookGroup.Books.Count() == 1)
                 {
                     var book = publisherBookGroup.Books.First();
@@ -71,7 +77,7 @@ namespace LegacyCode
                 }
 
                 var publisherGroups = new Collection<PublisherBookGroup> {publisherBookGroup};
-                
+
                 DisplayGroups(publisherGroups);
             }
         }
