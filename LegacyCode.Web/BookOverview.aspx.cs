@@ -8,15 +8,9 @@ namespace LegacyCode
 {
     public partial class BookOverview : Page
     {
-        private static Publisher QueryStringPublisher
-        {
-            get { throw new DependencyException(); }
-        }
+        private static Publisher QueryStringPublisher { get { throw new DependencyException(); } }
 
-        private static Classification QueryStringBookClassification
-        {
-            get { throw new DependencyException(); }
-        }
+        private static Classification QueryStringBookClassification { get { throw new DependencyException(); } }
 
         private static Uri GetTargetPage(long bookId, Publisher publisher)
         {
@@ -37,58 +31,43 @@ namespace LegacyCode
         {
             if (publisherFilter == Publisher.Unknown)
             {
-                //Display groups
                 DisplayGroups(GetBookCollection().GetGroups);
+                return;
             }
-            else
+
+            var publisherId = GetPublisherId(publisherFilter);
+            var publisherBookGroup = GetBookCollection().GetPublisherGroupById(publisherId);
+
+            if (publisherBookGroup == null || publisherBookGroup.Books.Count() == 0)
             {
-                int publisherId = GetPublisherId(publisherFilter);
-                PublisherBookGroup publisherBookGroup = GetBookCollection().GetPublisherGroupById(publisherId);
+                ShowNoBooksPanel("We couldn't find any books matching your filter.");
+                return;
+            }
 
-                if (publisherBookGroup != null)
+            if (publisherBookGroup.Books.Count() == 1)
+            {
+                var book = publisherBookGroup.Books.First();
+
+                if (classificationFilter == Classification.Unknown || book.Classification == classificationFilter)
                 {
-                    int bookCount = publisherBookGroup.Books.Count();
-
-                    if (bookCount == 1)
-                    {
-                        // Show details.
-                        Book book = publisherBookGroup.Books.First();
-
-                        if (classificationFilter == Classification.Unknown || book.Classification == classificationFilter)
-                        {
-                            //Display book details
-                            DisplayBookDetails(book);
-                        }
-                        else
-                        {
-                            //Display no books for classification
-                            ShowNoBooksPanel("We couldn't find any books matching your filter.");
-                        }
-                    }
-                    else if (bookCount == 0)
-                    {
-                        //Display no books for publisher
-                        ShowNoBooksPanel("We couldn't find any books matching your filter.");
-                    }
-                    else
-                    {
-                        var publisherGroups = new Collection<PublisherBookGroup> {publisherBookGroup};
-
-                        //Display Groups
-                        DisplayGroups(publisherGroups);
-                    }
+                    DisplayBookDetails(book);
                 }
                 else
                 {
-                    //Display no books for publisher
                     ShowNoBooksPanel("We couldn't find any books matching your filter.");
                 }
+            }
+            else
+            {
+                var publisherGroups = new Collection<PublisherBookGroup> {publisherBookGroup};
+
+                DisplayGroups(publisherGroups);
             }
         }
 
         protected virtual void DisplayBookDetails(Book book)
         {
-            Uri targetPage = GetTargetPage(book.ISBN, book.Publisher);
+            var targetPage = GetTargetPage(book.ISBN, book.Publisher);
 
             Response.Redirect(targetPage.ToString());
         }
