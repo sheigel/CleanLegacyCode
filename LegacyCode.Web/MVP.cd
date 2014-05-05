@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="LegacyCode.BookOverviewPresenter">
+    <Position X="4.5" Y="5.75" Width="3.25" />
+    <AssociationLine Name="view" Type="LegacyCode.IBookOverviewView" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="6.812" Y="5.75" />
+        <Point X="6.812" Y="5.09" />
+        <Point X="9" Y="5.09" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAgAIAAAAAAQAQAAAAAAA=</HashCode>
+      <FileName>BookOverviewPresenter.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="view" />
+      <Field Name="bookRepository" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="LegacyCode.BookOverview">
+    <Position X="8.75" Y="5.75" Width="3" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAGAAAAAAAAgAAAAACAAMAQgAAAAAEAAAAIAAAA=</HashCode>
+      <FileName>BookOverview.aspx.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="presenter" />
+    </ShowAsAssociation>
+    <Lollipop Position="1.423" />
+  </Class>
+  <Class Name="LegacyCode.Bll.BookRepository">
+    <Position X="1.25" Y="5.75" Width="2.5" />
+    <TypeIdentifier />
+    <Lollipop Position="1.331" />
+  </Class>
+  <Class Name="LegacyCode.Bll.BookCollection">
+    <Position X="4.75" Y="2.25" Width="3.5" />
+    <TypeIdentifier />
+  </Class>
+  <Interface Name="LegacyCode.IBookOverviewView">
+    <Position X="9" Y="4" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAEAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>IBookOverviewView.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="LegacyCode.Bll.IBookRepository">
+    <Position X="1.25" Y="4.25" Width="2.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Font Name="Segoe UI" Size="8.25" />
+</ClassDiagram>
